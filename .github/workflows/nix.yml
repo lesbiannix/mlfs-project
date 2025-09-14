@@ -1,0 +1,26 @@
+name: Nix Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Nix
+        uses: cachix/install-nix-action@v25
+      - name: Nix flake show (if present)
+        run: |
+          if [ -f nixlfs/flake.nix ]; then
+            nix flake show nixlfs || true
+          fi
+      - name: Nix build (if present)
+        run: |
+          if [ -f nixlfs/flake.nix ]; then
+            nix build nixlfs || true
+          fi
+
